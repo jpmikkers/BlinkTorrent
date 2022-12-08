@@ -9,57 +9,66 @@
 <MudForm @ref="form" @bind-IsValid="@success" Model="settings" @bind-Errors="@errors">
 	<MudGrid>
 		<MudItem xs="12" sm="6">
-			<MudPaper Class="pa-4">
-				<MudText Typo="Typo.h4">Network</MudText>
-				<MudDivider/>
-				<MudTextField T="IPEndPoint" Label="Listen endpoint" @bind-Value=settings.ListenEndPoint Converter=ipendpointconverter Clearable=true HelperText="use 0.0.0.0:55123 to listen on port 55123 on all nics" HelperTextOnFocus=true />
-				<MudTextField T="IPEndPoint" Label="Dht endpoint" @bind-Value=settings.DhtEndPoint Converter=ipendpointconverter Clearable=true HelperText="use 0.0.0.0:55123 to listen on port 55123 on all nics" HelperTextOnFocus=true />
-				<MudCheckBox Size=Size.Small Label="Allow port forwarding" @bind-Checked=settings.AllowPortForwarding />
-				<MudCheckBox Size=Size.Small Label="Allow local peer discovery" @bind-Checked=settings.AllowLocalPeerDiscovery />
-			</MudPaper>
+			<MudCard>
+				<MudCardHeader>
+					<MudText Typo="Typo.h5" Color="Color.Info">Network</MudText>
+				</MudCardHeader>
+				<MudCardContent>
+					<MudTextField T="IPEndPoint" Label="Listen endpoint" @bind-Value=settings.ListenEndPoint Converter=ipendpointconverter Clearable=true HelperText="use 0.0.0.0:55123 to listen on port 55123 on all nics" HelperTextOnFocus=true/>
+					<MudTextField T="IPEndPoint" Label="Dht endpoint" @bind-Value=settings.DhtEndPoint Converter=ipendpointconverter Clearable=true HelperText="use 0.0.0.0:55123 to listen on port 55123 on all nics" HelperTextOnFocus=true />
+					<MudCheckBox Size=Size.Small Label="Allow port forwarding" @bind-Checked=settings.AllowPortForwarding />
+					<MudCheckBox Size=Size.Small Label="Allow local peer discovery" @bind-Checked=settings.AllowLocalPeerDiscovery />
+				</MudCardContent>
+			</MudCard>
 		</MudItem>
 		<MudItem xs="12" sm="6">
-			<MudPaper Class="pa-4">
-				<MudText Typo="Typo.h4">Folders</MudText>
-				<MudDivider />
-				<MudStack>
+			<MudCard>
+				<MudCardHeader>
+					<MudText Typo="Typo.h5" Color="Color.Info">Folders</MudText>
+				</MudCardHeader>
+				<MudCardContent>
 					<MudCheckBox Size=Size.Small Label="Use hot folder" @bind-Checked=settings.UseTorrentHotFolder />
 					<MudCheckBox Size=Size.Small Label="Delete hot folder torrent after adding" @bind-Checked=settings.DeleteHotFolderTorrentAfterAdding Disabled=!settings.UseTorrentHotFolder />
-					<MudTextField Label="Download folder" @bind-Value=settings.DownloadFolder Required=true />
-					<MudTextField Label="Hot folder" @bind-Value=settings.TorrentHotFolder Disabled=!settings.UseTorrentHotFolder Required=true />
-				</MudStack>
-			</MudPaper>
+					<MudTextField Label="Download folder" @bind-Value=settings.DownloadFolder Required=true ErrorText="Download folder name is required" />
+					<MudTextField Label="Hot folder" @bind-Value=settings.TorrentHotFolder Disabled=!settings.UseTorrentHotFolder Required=true ErrorText="Hot folder name is required" />
+				</MudCardContent>
+			</MudCard>
 		</MudItem>
 		<MudItem xs="12" sm="6">
-			<MudPaper Class="pa-4">
-				<MudText Typo="Typo.h4">Speed Limits</MudText>
-				<MudDivider />
-				<MudStack>
+			<MudCard>
+				<MudCardHeader>
+					<MudText Typo="Typo.h5" Color="Color.Info">Speed Limits</MudText>
+				</MudCardHeader>
+				<MudCardContent>
 					<MudNumericField Label="Maximum download rate (Bps)" @bind-Value=settings.MaximumDownloadRate Min="0" HelperText="use 0 for unrestricted" HelperTextOnFocus=true />
 					<MudNumericField Label="Maximum upload rate (Bps)" @bind-Value=settings.MaximumUploadRate Min="0" HelperText="use 0 for unrestricted" HelperTextOnFocus=true />
-				</MudStack>
-			</MudPaper>
+				</MudCardContent>
+			</MudCard>
 		</MudItem>
 		<MudItem xs="12" sm="6">
-			<MudPaper Class="pa-4">
-				<MudText Typo="Typo.h4">Queue and Seed Limits</MudText>
-				<MudDivider/>
-				<MudStack>
+			<MudCard>
+				<MudCardHeader>
+					<MudText Typo="Typo.h5" Color="Color.Info">Queue and Seed Limits</MudText>
+				</MudCardHeader>
+				<MudCardContent>
 					<MudNumericField Label="Maximum active downloads" @bind-Value=settings.MaximumActiveDownloads Min="0" />
 					<MudNumericField Label="Maximum upload uploads" @bind-Value=settings.MaximumActiveUploads Min="0" />
 					<MudNumericField Label="Max seed ratio" @bind-Value=settings.SeedLimit Min="0.0" Max="99999.0" />
-				</MudStack>
-			</MudPaper>
+				</MudCardContent>
+			</MudCard>
 		</MudItem>
 		<MudItem xs="12" sm="12">
 			<MudPaper Class="pa-4">
-				<MudText Typo="Typo.subtitle2">@($"Errors ({errors.Length})")</MudText>
-					@foreach(var error in errors)
-				{
-					<MudText Color="@Color.Error">@error</MudText>
-				}
-				<MudDivider/>
 				<MudStack>
+					@if (errors.Length > 0)
+					{
+						<MudText Typo="Typo.subtitle2">@($"Errors ({errors.Length})")</MudText>
+						@foreach (var error in errors)
+						{
+							<MudText Color="@Color.Error">@error</MudText>
+						}
+						<MudDivider />
+					}
 					<div class="d-flex align-center justify-space-between">
 						<MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick=ResetToDefaults>Reset to default</MudButton>
 						<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Apply</MudButton>
@@ -69,13 +78,6 @@
 		</MudItem>
 	</MudGrid>
 </MudForm>
-
-@*        <MudPaper Class="pa-4 mt-4">
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>form.Validate())">Validate</MudButton>
-			<MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
-			<MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=>form.ResetValidation())">Reset Validation</MudButton>
-			</MudPaper>
-*@
 
 @code {
 	bool success = true;
@@ -95,9 +97,9 @@
 		settings = TorrentService.Settings;
 	}
 
-	private async Task ResetToDefaults()
+	private void ResetToDefaults()
 	{
 		settings = new TorrentSettings();
-		await form?.Validate();
+		form?.ResetValidation();
 	}
 }
