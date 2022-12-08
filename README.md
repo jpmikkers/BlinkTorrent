@@ -7,6 +7,16 @@ Blazor web based gui frontend for monotorrent. Please note: this project is stil
 - uses the [mudblazor](https://www.mudblazor.com) blazor component library
 - fully managed (c#) implementation
 
+## Build & run Instructions
+To build, go to the BlinkTorrent subdirectory that contains BlinkTorrent.csproj. Then run the following commands:
+
+    dotnet clean
+    dotnet restore
+    dotnet run
+
+After that, the gui can be reached at [http://localhost:5105](http://localhost:5105)
+
+If you run the application, it will create a folder structure at the following location `%localappdata%\blinktorrent`, which typically expands to `C:\Users\SomeUser\AppData\Local\blinktorrent`.
 
 ## Screenshots
 
