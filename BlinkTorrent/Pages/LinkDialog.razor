@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@inject ITorrentService torrentService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Link" Class="mr-3 mb-n1"/>
+            Enter torrent url or magnet link
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@rawurl" Label="URL" ReadOnly="false"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Upload</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    private string rawurl = string.Empty;
+
+    private async Task Submit()
+    {
+        if(!string.IsNullOrEmpty(rawurl))
+        {
+            try
+            {
+               await torrentService.DownloadTorrentOrMagnet(new Uri(rawurl));
+            }
+            catch(Exception _)
+            {
+            }
+        }
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+
+    void Cancel() => MudDialog?.Cancel();
+}
+

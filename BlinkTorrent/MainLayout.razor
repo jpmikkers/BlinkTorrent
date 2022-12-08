@@ -1,0 +1,105 @@
+﻿@inherits LayoutComponentBase
+@inject IDialogService DialogService
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar>
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" OnClick="OpenDialog" />
+        <MudIconButton Icon="@Icons.Material.Filled.Link" Color="Color.Inherit" OnClick="LinkDialog" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/jpmikkers/BlinkTorrent" Target="_blank" />
+        @if(_isDarkMode)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" OnClick="@((e) => DoLightMode())" />
+        }
+        else
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.DarkMode" Color="Color.Inherit" OnClick="@((e) => DoDarkMode())" />
+        }
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">BlinkTorrent</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _isDarkMode;
+    private MudThemeProvider? _mudThemeProvider;
+    private MudTheme? _theme = new();
+
+    bool _drawerOpen = true;
+
+    public MainLayout()
+    {
+        _theme.Palette.Background = new MudBlazor.Utilities.MudColor(230,230,230, 255);
+        //_theme.Palette.AppbarBackground = new MudBlazor.Utilities.MudColor(200, 200, 250, 255);
+        _theme.Palette.DrawerBackground = new MudBlazor.Utilities.MudColor(200, 200, 250, 255);
+        //_theme.PaletteDark.TextDisabled = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.TextPrimary = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.TextSecondary = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.DarkContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.InfoContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.PrimaryContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.SecondaryContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.WarningContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.TertiaryContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.DrawerText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        //_theme.PaletteDark.Text = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
+        _theme.LayoutProperties.DefaultBorderRadius = "4px";
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    void DoDarkMode()
+    {
+        _isDarkMode = true;
+    }
+
+    void DoLightMode()
+    {
+        _isDarkMode = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            if(_mudThemeProvider != null)
+            {
+                _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, DisableBackdropClick=true };
+        DialogService.Show<Pages.AddDialog>("Add torrents", options);
+    }
+
+    private void LinkDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, DisableBackdropClick = true };
+        DialogService.Show<Pages.LinkDialog>("Enter torrent or magnet link", options);
+    }
+
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+    }
+}

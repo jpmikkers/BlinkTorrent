@@ -1,0 +1,42 @@
+﻿@inject ITorrentService torrentService
+@inject NavigationManager NavigationManager
+@page "/torrents"
+
+<PageTitle>Torrents</PageTitle>
+
+<UpdateOnPropertyChange Item=@torrentService>
+    @if(torrentService.Torrents.Count > 0)
+    {
+        <MudList Dense=true>
+                @foreach(var torrent in torrentService.Torrents)
+                {
+                    <MudListItem @key=torrent.Key>
+                        <UpdateOnPropertyChange Item=@torrent>
+                            <MudTorrentItem torrent=@torrent></MudTorrentItem>
+                        </UpdateOnPropertyChange>
+                    </MudListItem>
+                }
+        </MudList>
+    }
+    else
+    {
+        <br />
+        <MudText Typo="Typo.h3">There are no active torrents, press the '+' button to add some..</MudText>
+    }
+</UpdateOnPropertyChange>
+
+@code {
+    private bool CanResume(ITorrentItem torrentItem)
+    {
+        return torrentItem.State == TorrentItemState.Paused;
+    }
+
+    private bool CanPause(ITorrentItem torrentItem)
+    {
+        return torrentItem.State != TorrentItemState.Paused && torrentItem.State != TorrentItemState.Pausing;
+    }
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //}
+}

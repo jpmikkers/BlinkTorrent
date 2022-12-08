@@ -1,0 +1,19 @@
+﻿@page "/"
+@inject NavigationManager NavManager
+
+<h1>Redirect Page</h1>
+
+<p>Redirecting to Torrents</p>
+
+@code {
+    protected override void OnInitialized()
+    {
+        //NavManager.NavigateTo("/Torrents");
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        NavManager.NavigateTo("torrents");
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}
