@@ -23,5 +23,8 @@ If you run the application, it will create a folder structure at the following l
 ### Dark mode
 ![BlinkTorrent dark mode](https://github.com/jpmikkers/BlinkTorrent/blob/main/Screenshots/screendark.png)
 
+### Settings screen
+![BlinkTorrent dark mode](https://github.com/jpmikkers/BlinkTorrent/blob/main/Screenshots/settingsdark.png)
+
 ### Light mode
 ![BlinkTorrent light mode](https://github.com/jpmikkers/BlinkTorrent/blob/main/Screenshots/screenlight.png)
