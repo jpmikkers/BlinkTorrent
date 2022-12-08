@@ -1,5 +1,12 @@
 # BlinkTorrent
-Blazor web based gui frontend for monotorrent
+Blazor web based gui frontend for monotorrent. Please note: this project is still very much in development.
+
+- modern blazor-server based single page application
+- features queue ordering, queue limits, seed ratio limits
+- uses [monotorrent](https://github.com/alanmcgovern/monotorrent) as the torrent client engine
+- uses the [mudblazor](https://www.mudblazor.com) blazor component library
+- fully managed (c#) implementation
+
 
 ## Screenshots
 
