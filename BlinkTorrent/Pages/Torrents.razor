@@ -25,7 +25,23 @@
     }
 </UpdateOnPropertyChange>
 
+@*
+<MudButton OnClick=@(_ => { rotation++; })>boop</MudButton>
+
+<style>
+    .bt_rotated {
+        -webkit-transform: rotate(@($"{rotation}deg"));
+        -moz-transform: rotate(@($"{rotation}deg"));
+        -o-transform: rotate(@($"{rotation}deg"));
+        transform: rotate(@($"{rotation}deg"));
+        background-color: #3e6ac2;
+    }
+</style>
+    int rotation = 5;
+*@
+
 @code {
+
     private bool CanResume(ITorrentItem torrentItem)
     {
         return torrentItem.State == TorrentItemState.Paused;

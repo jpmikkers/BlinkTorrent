@@ -71,7 +71,7 @@
 					}
 					<div class="d-flex align-center justify-space-between">
 						<MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick=ResetToDefaults>Reset to default</MudButton>
-						<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Apply</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="@Submit">Apply</MudButton>
 					</div>
 				</MudStack>
 			</MudPaper>
@@ -83,8 +83,7 @@
 	bool success = true;
 	string[] errors = { };
 	MudForm? form = default!;
-
-	private TorrentSettings settings { get; set; } = default!;
+    TorrentSettings settings { get; set; } = default!;
 
 	private Converter<System.Net.IPEndPoint> ipendpointconverter = new Converter<System.Net.IPEndPoint>()
 		{
@@ -94,12 +93,17 @@
 
 	protected override void OnInitialized()
 	{
-		settings = TorrentService.Settings;
+		settings = TorrentService.GetSettings();
 	}
 
 	private void ResetToDefaults()
 	{
-		settings = new TorrentSettings();
+		settings = TorrentService.GetDefaultSettings();
 		form?.ResetValidation();
+	}
+
+	private async Task Submit()
+	{
+		await TorrentService.SetSettings(settings);
 	}
 }

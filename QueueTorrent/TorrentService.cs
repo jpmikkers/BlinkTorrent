@@ -1,4 +1,5 @@
-﻿using MonoTorrent;
+﻿using Baksteen.Extensions.DeepCopy;
+using MonoTorrent;
 using MonoTorrent.Client;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -31,11 +32,6 @@ namespace QueueTorrent
         internal string StateFolderFullPath => _stateFolderFullPath;
         internal string DownloadFolderFullPath => _downloadFolderFullPath;
 
-        public TorrentSettings Settings
-        {
-            get => _settings;
-        }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public List<TorrentItem> Torrents
@@ -64,16 +60,21 @@ namespace QueueTorrent
             else
             {
                 _settings = new TorrentSettings();
-                using (var s = File.Create(_settingsFullPath))
-                {
-                    JsonSerializer.Serialize<TorrentSettings>(s, _settings, new JsonSerializerOptions
-                    {
-                        WriteIndented = true,
-                    });
-                }
+                SaveSettings();
             }
 
             _engine = new ClientEngine();
+        }
+
+        private void SaveSettings()
+        {
+            using(var s = File.Create(_settingsFullPath))
+            {
+                JsonSerializer.Serialize<TorrentSettings>(s, _settings, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                });
+            }
         }
 
         private string ConstructFullPath(string relativeOrAbsoluteFolder)
@@ -98,18 +99,12 @@ namespace QueueTorrent
             return result;
         }
 
-        private async Task StartInternal()
+        private EngineSettings ConvertSettings(TorrentSettings settings)
         {
-            _stateFolderFullPath = ConstructFullPath(BlinkTorrentStateFolder);
-            _monoTorrentCacheDirectoryFullPath = ConstructFullPath(MonoTorrentCacheFolder);
-            _downloadFolderFullPath = ConstructFullPath(_settings.DownloadFolder);
-            _torrentHotFolderFullPath = ConstructFullPath(_settings.TorrentHotFolder);
-
-            // Give an example of how settings can be modified for the engine.
             var settingBuilder = new EngineSettingsBuilder
             {
                 // Allow the engine to automatically forward ports using upnp/nat-pmp (if a compatible router is available)
-                AllowPortForwarding = _settings.AllowPortForwarding,
+                AllowPortForwarding = settings.AllowPortForwarding,
 
                 // Automatically save a cache of the DHT table when all torrents are stopped.
                 AutoSaveLoadDhtCache = true,
@@ -125,19 +120,29 @@ namespace QueueTorrent
                 // so it can be reloaded later.
                 AutoSaveLoadMagnetLinkMetadata = true,
 
-                DhtEndPoint = _settings.DhtEndPoint,            // null => disabled Dht                
-                ListenEndPoint = _settings.ListenEndPoint ?? new IPEndPoint(IPAddress.Any, 0),
+                DhtEndPoint = settings.DhtEndPoint,            // null => disabled Dht                
+                ListenEndPoint = settings.ListenEndPoint,
 
                 CacheDirectory = _monoTorrentCacheDirectoryFullPath,
-                
-                MaximumDownloadRate = _settings.MaximumDownloadRate,
-                MaximumUploadRate = _settings.MaximumUploadRate,     
 
-                AllowLocalPeerDiscovery = _settings.AllowLocalPeerDiscovery,                
+                MaximumDownloadRate = settings.MaximumDownloadRate,
+                MaximumUploadRate = settings.MaximumUploadRate,
+
+                AllowLocalPeerDiscovery = settings.AllowLocalPeerDiscovery,
             };
 
+            return settingBuilder.ToSettings();
+        }
+
+        private async Task StartInternal()
+        {
+            _stateFolderFullPath = ConstructFullPath(BlinkTorrentStateFolder);
+            _monoTorrentCacheDirectoryFullPath = ConstructFullPath(MonoTorrentCacheFolder);
+            _downloadFolderFullPath = ConstructFullPath(_settings.DownloadFolder);
+            _torrentHotFolderFullPath = ConstructFullPath(_settings.TorrentHotFolder);
+
             _engine.Dispose();
-            _engine = new ClientEngine(settingBuilder.ToSettings());
+            _engine = new ClientEngine(ConvertSettings(_settings));
 
             foreach ((var persistedTorrentStateExt, var idx) in Directory
                 .EnumerateFiles(StateFolderFullPath, "*.state")
@@ -320,6 +325,23 @@ namespace QueueTorrent
             {
                 await this.DownloadMagnet(uri.AbsoluteUri);
             }
+        }
+
+        public TorrentSettings GetSettings()
+        {
+            return _settings.DeepCopy()!;
+        }
+
+        public TorrentSettings GetDefaultSettings()
+        {
+            return new TorrentSettings();
+        }
+
+        public async Task SetSettings(TorrentSettings settings)
+        {
+            await _engine.UpdateSettingsAsync(ConvertSettings(settings));
+            _settings = settings;
+            SaveSettings();
         }
     }
 }

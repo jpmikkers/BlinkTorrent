@@ -22,7 +22,7 @@ namespace QueueTorrent
 	public class TorrentSettings
     {
         [JsonConverter(typeof(IPEndPointJsonConverter))]
-        public IPEndPoint? ListenEndPoint { get; set; } = new IPEndPoint(IPAddress.Any,55123);
+        public IPEndPoint? ListenEndPoint { get; set; } = new IPEndPoint(IPAddress.Any, 55123);
 
 		[JsonConverter(typeof(IPEndPointJsonConverter))]
 		public IPEndPoint? DhtEndPoint { get; set; } = new IPEndPoint(IPAddress.Any, 55123);
@@ -52,12 +52,12 @@ namespace QueueTorrent
         public int MaximumUploadRate { get; set; } = 0;
 
         [Required]
-        public int MaximumActiveDownloads { get; set; } = 1;
+        public int MaximumActiveDownloads { get; set; } = 5;
 
         [Required]
-        public int MaximumActiveUploads { get; set; } = 1;
+        public int MaximumActiveUploads { get; set; } = 5;
 
         [Required]
-        public double SeedLimit { get; set; } = 1.0;
+        public double SeedLimit { get; set; } = 2.0;
     }
 }

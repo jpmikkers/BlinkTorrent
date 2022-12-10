@@ -5,7 +5,6 @@ namespace QueueTorrent
 {
     public interface ITorrentService: IDisposable, INotifyPropertyChanged
     {
-        TorrentSettings Settings { get; }
         List<TorrentItem> Torrents { get; }
         Task DownloadTorrentOrMagnet(Uri uri);
         Task DownloadMagnet(string uri);
@@ -16,5 +15,9 @@ namespace QueueTorrent
         Task QueueToTop(IEnumerable<TorrentKey> items);
         Task QueueUp(IEnumerable<TorrentKey> items);
         Task Start();
+
+        TorrentSettings GetSettings();
+        Task SetSettings(TorrentSettings settings);
+        TorrentSettings GetDefaultSettings();
     }
 }

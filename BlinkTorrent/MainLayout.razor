@@ -4,6 +4,19 @@
 <MudDialogProvider />
 <MudSnackbarProvider/>
 
+@* https://stackoverflow.com/questions/54453995/how-to-have-a-gradient-take-up-the-full-screen-in-bootstrap-and-css/54454030#54454030 *@
+@*
+    <MudLayout Style="
+  background-color: #555555;
+  background-image: linear-gradient(225deg, #55111155 0%, #22552255 50%, #00226655 100%);
+  background-repeat: no-repeat;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-width: 100%;
+  min-height: 100vh;">
+
+*@
+
 <MudLayout>
     <MudAppBar>
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
