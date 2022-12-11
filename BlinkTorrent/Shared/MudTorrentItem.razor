@@ -1,55 +1,125 @@
 ﻿@inject ITorrentService torrentService
 @inject NavigationManager NavigationManager
 
+
 @if(torrent != null)
 {
 	<MudCard Style="padding:4px;margin:0px" Outlined=true Elevation="2">
-		<MudStack Row=false Justify="Justify.SpaceBetween" Spacing="1">
+		<div class="d-flex flex-grow-1 gap-1">
+			@* state indicator *@
+			<MudPaper Class=@($"py-1 {StateColorClass}") Width="14px" Elevation="0" />
+			@* title, data and buttons *@
+			<MudPaper Class="flex-grow-1 py-0" Width="64px" Elevation="0">
+				<MudStack Row=false Justify="Justify.SpaceBetween" Spacing="1">
 
-			<MudStack Row=false Justify="Justify.SpaceBetween" Spacing="0">
-				<MudText Typo="Typo.body1" Class="bt_ellipsistext">@torrent.Name</MudText>
-				<MudText Typo="Typo.subtitle2" Color="Color.Info">State: @(torrent.State) ▼@(Utils.ConvertSpeed(torrent.DownloadRate)) ▲@(Utils.ConvertSpeed(torrent.UploadRate)) Seed ratio: @(torrent.SeedRatio)</MudText>
-			</MudStack>
+					<MudText Typo="Typo.body1" Class="bt_ellipsistext">@torrent.Name</MudText>
+					<MudText Typo="Typo.subtitle2" Color="Color.Info">State: @(torrent.State) ▼@(Utils.ConvertSpeed(torrent.DownloadRate)) ▲@(Utils.ConvertSpeed(torrent.UploadRate)) Seed ratio: @(torrent.SeedRatio)</MudText>
 
-			<MudProgressLinear Color="Color.Success" Size="Size.Large" Minimum="0.0" Maximum="1.0" Value=@torrent.Progress>@($"{torrent.Progress * 100.0: 0.0#} %")</MudProgressLinear>
+						<MudProgressLinear Color="Color.Success" Size="Size.Large" Minimum="0.0" Maximum="1.0" Value=@torrent.Progress>@($"{torrent.Progress * 100.0: 0.0#} %")</MudProgressLinear>
 
-			<MudStack Row=true AlignItems="AlignItems.Center">
+						<MudStack Row=true AlignItems="AlignItems.Center">
 
-				@* resume, pause, recheck *@
-				<MudButtonGroup Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.PlayArrow" Disabled=@(!CanResume(torrent)) OnClick=@(async () => await torrent.Resume())></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.Pause" Disabled=@(!CanPause(torrent)) OnClick=@(async () => await torrent.Pause())></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.Recycling" OnClick=@(async () => await torrent.Verify())></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.List" OnClick=@(() => NavigationManager.NavigateTo($"torrentdetails/{torrent.Key}")) />
-				</MudButtonGroup>
+							@* resume, pause, recheck *@
+							<MudButtonGroup Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.PlayArrow" Disabled=@(!CanResume(torrent)) OnClick=@(async () => await torrent.Resume())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.Pause" Disabled=@(!CanPause(torrent)) OnClick=@(async () => await torrent.Pause())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.Recycling" OnClick=@(async () => await torrent.Verify())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.List" OnClick=@(() => NavigationManager.NavigateTo($"torrentdetails/{torrent.Key}")) />
+							</MudButtonGroup>
 
-				@* queue ordering *@
-				<MudButtonGroup Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveUp" OnClick=@(async () => await torrent.QueueToTop())></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveDown" OnClick=@(async () => await torrent.QueueToBottom())></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowUpward" OnClick=@(async () => await torrent.QueueUp())></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowDownward" OnClick=@(async () => await torrent.QueueDown())></MudIconButton>
-				</MudButtonGroup>
+							@* queue ordering *@
+							<MudButtonGroup Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveUp" OnClick=@(async () => await torrent.QueueToTop())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveDown" OnClick=@(async () => await torrent.QueueToBottom())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowUpward" OnClick=@(async () => await torrent.QueueUp())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowDownward" OnClick=@(async () => await torrent.QueueDown())></MudIconButton>
+							</MudButtonGroup>
 
-				<MudSpacer></MudSpacer>
+							<MudSpacer></MudSpacer>
 
-				@* delete buttons *@
-				<MudButtonGroup Size="Size.Small" Color="Color.Dark" Variant="Variant.Filled">
-					<MudIconButton style="padding:2px" Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick=@(async () => await torrent.Remove(true))></MudIconButton>
-					<MudIconButton style="padding:2px" Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.DeleteForever" OnClick=@(async () => await torrent.Remove(false))></MudIconButton>
-				</MudButtonGroup>
-			</MudStack>
-		</MudStack>
-	</MudCard>
+							@* delete buttons *@
+							<MudButtonGroup Size="Size.Small" Color="Color.Dark" Variant="Variant.Filled">
+								<MudIconButton style="padding:2px" Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick=@(async () => await torrent.Remove(true))></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.DeleteForever" OnClick=@(async () => await torrent.Remove(false))></MudIconButton>
+							</MudButtonGroup>
+						</MudStack>
+					</MudStack>
+
+				</MudPaper>
+			</div>
+		</MudCard>
 }
 
 <style>
+	.btbox {
+		display: flex;
+	}
+
+	.btleft {
+		flex: 0 0 250px; /* do not grow, do not shrink, start at 250px */
+		border: 1px dashed #00f;
+	}
+
+	.btright {
+		flex: 1; /* grow */
+		border: 1px dashed #f0f;
+	}
+
 	.bt_ellipsistext {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		word-wrap: unset;
 		white-space: nowrap
 	}
+
+	.torrentstate_Starting {
+		background-color: lightblue
+	}
+
+	.torrentstate_Downloading {
+		background-color: darkblue
+	}
+
+	.torrentstate_Pausing {
+		background-color: dimgray
+	}
+
+	.torrentstate_Paused {
+		background-color: dimgray
+	}
+
+	.torrentstate_Seeding {
+		background-color: aqua
+	}
+
+	.torrentstate_Finishing {
+		background-color: lightgreen
+	}
+
+	.torrentstate_Finished {
+		background-color: green
+	}
+
+	.torrentstate_Queueing {
+		background-color: mediumpurple
+	}
+
+	.torrentstate_Queued {
+		background-color: purple
+	}
+
+	.torrentstate_Hashing {
+		background-color: peru
+	}
+
+	.torrentstate_Metadata {
+		background-color: peru
+	}
+
+	.torrentstate_Error {
+		background-color: red
+	}
+
 </style>
 
 @code {
@@ -61,6 +131,14 @@
 	private bool CanPause(ITorrentItem torrentItem)
 	{
 		return torrentItem.State != TorrentItemState.Paused && torrentItem.State != TorrentItemState.Pausing;
+	}
+
+	private string StateColorClass
+	{
+		get
+		{
+			return $"torrentstate_{torrent!.State.ToString()}";
+		}
 	}
 
 	[Parameter]
