@@ -7,13 +7,13 @@
 <UpdateOnPropertyChange Item=@torrentService>
     @if(torrentService.Torrents.Count > 0)
     {
-        <MudList Dense=true>
+        <MudList Dense=true DisableGutters=true DisablePadding=true>
                 @foreach(var torrent in torrentService.Torrents)
                 {
-                    <MudListItem @key=torrent.Key>
+                    <MudListItem Class="ma-0 pa-0" @key=torrent.Key>
                         <UpdateOnPropertyChange Item=@torrent>
                             <MudTorrentItem torrent=@torrent></MudTorrentItem>
-                        </UpdateOnPropertyChange>
+                         </UpdateOnPropertyChange>
                     </MudListItem>
                 }
         </MudList>
