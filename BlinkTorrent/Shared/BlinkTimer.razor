@@ -1,0 +1,81 @@
+﻿@using System.Timers
+@implements IDisposable
+
+@ChildContent
+
+@code {
+    private readonly Timer _timer = new Timer();
+
+    [Parameter]
+    public double Initialnterval { get; set; } = 1000.0;
+
+    /// <summary>
+    /// <inheritdoc cref="System.Timers.Timer.Interval"/>
+    /// </summary>
+    public double Interval
+    {
+        get { return _timer.Interval; }
+        set { if(_timer.Interval != value) { _timer.Interval = value; } }
+    }
+
+    //https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback OnTickRendering { get; set; }
+
+    /// <summary>
+    /// Assign an action to this property, this will be executed every interval. This event will not 
+    /// automatically trigger a statechange in the parent component.
+    /// </summary>
+    [Parameter]
+    public Action? OnTickNonRendering { get; set; }
+
+    /// <summary>
+    /// Assign an async action to this property, this will be executed every interval. This event will not 
+    /// automatically trigger a statechange in the parent component.
+    /// </summary>
+    [Parameter]
+    public Func<Task>? OnTickNonRenderingAsync { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _timer.Interval = Initialnterval;
+        _timer.Elapsed -= OnTimer;
+        _timer.Elapsed += OnTimer;
+        _timer.Start();
+    }
+
+    private async void OnTimer(object? sender, ElapsedEventArgs args)
+    {
+        await InvokeAsync(async () =>
+        {
+            if(OnTickNonRendering is not null)
+            {
+                OnTickNonRendering();
+            }
+
+            if(OnTickNonRenderingAsync is not null)
+            {
+                await OnTickNonRenderingAsync();
+            }
+
+            if(OnTickRendering.HasDelegate)
+            {
+                await OnTickRendering.InvokeAsync();        
+            }
+
+            if(ChildContent is not null)
+            {
+                StateHasChanged();
+            }
+        });
+    }
+
+    public void Dispose()
+    {
+        _timer.Stop();
+        _timer.Elapsed -= OnTimer;
+    }
+}

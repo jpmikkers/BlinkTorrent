@@ -34,15 +34,8 @@
         }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader Class="gap-2">
-            <svg width="32" height="32" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                    <title>Layer 1</title>
-                    <ellipse ry="30" rx="30" id="svg_2" cy="32" cx="32" stroke="#000" fill="#B6C7EA" />
-                    <ellipse ry="8" rx="8" id="svg_3" cy="32" cx="22" stroke="#000" fill="#EDFFFF" />
-                    <rect id="svg_4" height="4" width="16" y="30" x="37" stroke="#000" fill="#EDFFFF" />
-                </g>
-            </svg>
+        <MudDrawerHeader Class="gap-2" >
+            <GoogelyBall/>
             <MudText Typo="Typo.h6">BlinkTorrent</MudText>
         </MudDrawerHeader>
         <NavMenu />
@@ -58,7 +51,6 @@
     private bool _isDarkMode;
     private MudThemeProvider? _mudThemeProvider;
     private MudTheme? _theme = new();
-
     bool _drawerOpen = true;
 
     public MainLayout()
