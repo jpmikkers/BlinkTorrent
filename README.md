@@ -1,4 +1,4 @@
-# BlinkTorrent
+#  BlinkTorrent <img src="https://github.com/jpmikkers/BlinkTorrent/blob/main/Screenshots/BlinkyBall.svg" height="28"/>
 A torrent client, built as a Blazor web based gui for monotorrent.
 
 ## Features
