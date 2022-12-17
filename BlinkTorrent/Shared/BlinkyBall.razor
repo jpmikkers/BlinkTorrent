@@ -2,22 +2,23 @@
 
 <div id="drawing">
     <svg width=32 height=32 viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <g>
+        <g @ref="blinkyGroup">
             <title>Layer 1</title>
             <ellipse stroke-width="0" fill-opacity="0.7" ry="11.75" rx="28.125" id="svg_1" cy="51.75" cx="26.875" stroke="#4c4c4c" fill="url(#svg_shadowgradient)" />
             <ellipse fill="url(#svg_ballgradient)" stroke="#000" cx="32" cy="32" id="svg_2" rx="30" ry="30"/>
 
-            <g visibility="hidden" @ref="eyesOpenElement">
+            <g visibility="hidden" class="blinkyLeftEyeOpen">
                 <ellipse fill="#EDFFFF" stroke="#000" stroke-width="0.2" cx="20" cy="32" rx="9" ry="9" />
-                <ellipse fill="#EDFFFF" stroke="#000" stroke-width="0.2" cx="44" cy="32" rx="9.5" ry="9.5" />
-                <ellipse fill="#004400" stroke="#000" stroke-width="0" cx="20" cy="33" rx="3.5" ry="3.5" @ref="leftPupilElement"/>
-                <ellipse fill="#004400" stroke="#000" stroke-width="0" cx="44" cy="33" rx="3.7" ry="3.7" @ref="rightPupilElement" />
+                <ellipse class="blinkyPupil" fill="#004400" stroke="#000" stroke-width="0" cx="20" cy="33" rx="3.5" ry="3.5"/>
             </g>
 
-            <g @ref="eyesClosedElement">
-                <rect fill="#000000" stroke="#000" x="11" y="30" width="16" height="2" />
-                <rect fill="#000000" stroke="#000" x="37" y="30" width="16" height="2" />
+            <g visibility="hidden" class="blinkyRightEyeOpen">
+                <ellipse fill="#EDFFFF" stroke="#000" stroke-width="0.2" cx="44" cy="32" rx="9.5" ry="9.5" />
+                <ellipse class="blinkyPupil" fill="#004400" stroke="#000" stroke-width="0" cx="44" cy="33" rx="3.7" ry="3.7"/>
             </g>
+
+            <rect class="blinkyLeftEyeClosed" fill="#000000" stroke="#000" x="11" y="30" width="16" height="2" />
+            <rect class="blinkyRightEyeClosed" fill="#000000" stroke="#000" x="37" y="30" width="16" height="2" />
         </g>
         <defs>
             <radialGradient spreadMethod="pad" r="1.08543" cx="0.71094" cy="0.24766" id="svg_ballgradient">
@@ -37,14 +38,11 @@
 @code {
     IJSObjectReference? module;
     IJSObjectReference? animator;
-    ElementReference? eyesOpenElement;
-    ElementReference? eyesClosedElement;
-    ElementReference? leftPupilElement;
-    ElementReference? rightPupilElement;
+    ElementReference? blinkyGroup;
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         module = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "./Shared/BlinkyBall.razor.js");
-        animator = await module!.InvokeAsync<IJSObjectReference>("createAnimator", eyesOpenElement, eyesClosedElement, leftPupilElement, rightPupilElement);
+        animator = await module!.InvokeAsync<IJSObjectReference>("createAnimator", blinkyGroup);
     }
 }
