@@ -56,10 +56,25 @@
         {
             if(animator is not null)
             {
-                await animator.InvokeVoidAsync("stopAnimation");
-                await animator.DisposeAsync();
+                try
+                {
+                    await animator.InvokeVoidAsync("stopAnimation");
+                    await animator.DisposeAsync();
+                }
+                catch
+                {
+                    // don't care about exceptions here
+                }
             }
-            await module.DisposeAsync();
+
+            try
+            {
+                await module.DisposeAsync();
+            }
+            catch
+            {
+                // don't care about exceptions here
+            }
         }
     }
 }
