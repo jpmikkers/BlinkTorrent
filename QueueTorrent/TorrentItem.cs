@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using MonoTorrent.Trackers;
 
 namespace QueueTorrent
 {
@@ -74,6 +75,27 @@ namespace QueueTorrent
         public string V1InfoHash {  get => _infoHashes.V1?.ToHex() ?? string.Empty; }
 
         public string V2InfoHash { get => _infoHashes.V2?.ToHex() ?? string.Empty; }
+
+        public IEnumerable<ITorrentTrackerItem> Trackers { 
+            get
+            {
+                var trackersTmp = new List<TorrentTrackerItem>();
+                foreach(var (tier, level) in _manager.TrackerManager.Tiers.Select((t, i) => (t, i)))
+                {
+                    foreach(var tracker in tier.Trackers)
+                    {
+                        trackersTmp.Add(new()
+                        {
+                            Active = tier.ActiveTracker == tracker,
+                            Tier = level,
+                            Status = tracker.Status.ToString(),
+                            Uri = tracker.Uri
+                        });
+                    }
+                }
+                return trackersTmp;
+            }
+        }
 
         private IDisposable BusyBlock()
         {

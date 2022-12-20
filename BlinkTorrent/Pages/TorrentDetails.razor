@@ -8,90 +8,126 @@
 
 <PageTitle>Torrent details</PageTitle>
 
-        <MudStack>
-            <MudCard Elevation="2">
-                <MudCardHeader>
-                    <CardHeaderAvatar>
-                        <MudAvatar Color="Color.Secondary">I</MudAvatar>
-                    </CardHeaderAvatar>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.body1">@Torrent.Name</MudText>
-                        <MudText Typo="Typo.body2">Properties</MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-                    </CardHeaderActions>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid Spacing="1">
-                        <MudItem xs="3">
-                            <MudTextField Value="@Torrent.State" Label="State" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="@Torrent.Progress" Label="Progress" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="@Torrent.SeedRatio" Label="Seed ratio" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="@Torrent.QueuePosition" Label="Queue Position" ReadOnly="true" Variant="Variant.Filled"/>
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="Torrent.NumberOfSeeders" Label="Seeders" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="Torrent.NumberOfLeechers" Label="Leechers" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="Torrent.DownloadRate" Label="Dl speed" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="3">
-                            <MudTextField Value="Torrent.UploadRate" Label="Ul speed" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="6">
-                            <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V1InfoHash) ? "<none>" : Torrent.V1InfoHash) Label="V1 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                        <MudItem xs="6">
-                            <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V2InfoHash) ? "<none>" : Torrent.V2InfoHash) Label="V2 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-            <MudCard Elevation="2">
-                <MudCardContent>
-                    <MudSimpleTable>
-                        <thead>
+<MudCard Elevation="2">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Color="Color.Secondary">I</MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">@Torrent.Name</MudText>
+            <MudText Typo="Typo.body2">Properties</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTabs>
+            <MudTabPanel Text="Files" Icon="@Icons.Material.Outlined.Folder">
+                <MudSimpleTable>
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Size</th>
+                            <th>Progress</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var file in Torrent.Files)
+                        {
+                            <UpdateOnPropertyChange Item=@file>
+                                <tr @key=file.Key>
+                                    <td>@file.Path</td>
+                                    <td>@(Utils.ConvertSize(file.Length))</td>
+                                    <td><MudProgressCircular Min="0.0" Max="1.0" Value="@file.Progress" Size="Size.Medium" Color="Color.Success"/></td>
+                                    <td>
+                                        <select @bind="file.Priority">
+                                            @foreach(var value in Enum.GetValues<Priority>())
+                                            {
+                                                <option value="@value" selected="@(file.Priority == value)">@value</option>
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>
+                            </UpdateOnPropertyChange>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudTabPanel>
+            <MudTabPanel Text="Trackers" Icon="@Icons.Material.Outlined.Cloud">
+                <MudSimpleTable>
+                    <thead>
+                        <tr>
+                            <th>Tier</th>
+                            <th>Active</th>
+                            <th>Uri</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var tracker in Torrent.Trackers)
+                        {
                             <tr>
-                                <th>Path</th>
-                                <th>Size</th>
-                                <th>Progress</th>
-                                <th>Priority</th>
+                                <td>@tracker.Tier</td>
+                                <td>@(tracker.Active ? 'y' : 'n')</td>
+                                <td>@tracker.Uri</td>
+                                <td>@tracker.Status</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var file in Torrent.Files)
-                            {
-                                <UpdateOnPropertyChange Item=@file>
-                                    <tr @key=file.Key>
-                                        <td>@file.Path</td>
-                                        <td>@(Utils.ConvertSize(file.Length))</td>
-                                        <td><MudProgressLinear Min="0.0" Max="1.0" Value="@file.Progress" Size="Size.Small"></MudProgressLinear></td>
-                                        <td>
-                                            <select @bind="file.Priority">
-                                                @foreach(var value in Enum.GetValues<Priority>())
-                                                {
-                                                    <option value="@value" selected="@(file.Priority == value)">@value</option>
-                                                }
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </UpdateOnPropertyChange>
-                            }
-                        </tbody>
-                    </MudSimpleTable>
-                </MudCardContent>
-            </MudCard>
-        </MudStack>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudTabPanel>
+            <MudTabPanel Text="Details" Icon="@Icons.Material.Outlined.Analytics">
+                <MudGrid Spacing="1">
+                    <MudItem xs="3">
+                        <MudTextField Value="@Torrent.State" Label="State" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="@Torrent.Progress" Label="Progress" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="@Torrent.SeedRatio" Label="Seed ratio" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="@Torrent.QueuePosition" Label="Queue Position" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="Torrent.NumberOfSeeders" Label="Seeders" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="Torrent.NumberOfLeechers" Label="Leechers" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="Torrent.DownloadRate" Label="Dl speed" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudTextField Value="Torrent.UploadRate" Label="Ul speed" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V1InfoHash) ? "<none>" : Torrent.V1InfoHash) Label="V1 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V2InfoHash) ? "<none>" : Torrent.V2InfoHash) Label="V2 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
+                    </MudItem>
+                </MudGrid>
+            </MudTabPanel>
+        </MudTabs>
+    </MudCardContent>
+</MudCard>
+
+<style>
+    /* compact tab header workaround, see:  https://github.com/MudBlazor/MudBlazor/issues/5323 */
+    
+    .mud-tab {
+        min-height: unset;
+        min-width: unset;
+    }
+
+    .mud-tab, .mud-button-label {
+        text-transform: none;
+    }
+</style>
 
 @*        <h3>@Torrent.Name</h3>
         <br />

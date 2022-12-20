@@ -77,6 +77,7 @@ namespace QueueTorrent
         long TotalBytesSent { get; }
 
         IEnumerable<ITorrentFileItem> Files { get; }
+        IEnumerable<ITorrentTrackerItem> Trackers { get; }
 
         Task Pause();
         Task Resume();
