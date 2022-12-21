@@ -47,7 +47,17 @@ If you run the application, it will create a folder structure at the following l
 
 ## Security
 
-As BlinkTorrent currently does not have any login/authentication/authorization built in yet, you should probably make sure the system that runs it is not exposed to the outside world. If you just want see and use the UI from your local system it's best to change the endpoint in `BlinkTorrent.serverconfig.json` from `http://0.0.0.0:5105` to `http://localhost:5105` or `http://127.0.0.1:5105`
+As BlinkTorrent currently does not have any login/authentication/authorization built in yet, you should probably check your router/firewall and make sure your system at port 5105 is not exposed to the outside internet. If you just want see and use the UI from your local system it's best to change the http endpoint in `BlinkTorrent.serverconfig.json` from `http://0.0.0.0:5105` to `http://localhost:5105` or `http://127.0.0.1:5105`, e.g.:
+
+    {
+      "Kestrel": {
+        "Endpoints": {
+          "Http": {
+            "Url": "http://127.0.0.1:5105"
+          }     
+        }
+      }
+    }
 
 ## Screenshots
 
