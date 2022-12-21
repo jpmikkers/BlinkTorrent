@@ -76,27 +76,6 @@ namespace QueueTorrent
 
         public string V2InfoHash { get => _infoHashes.V2?.ToHex() ?? string.Empty; }
 
-        public IEnumerable<ITorrentTrackerItem> Trackers { 
-            get
-            {
-                var trackersTmp = new List<TorrentTrackerItem>();
-                foreach(var (tier, level) in _manager.TrackerManager.Tiers.Select((t, i) => (t, i)))
-                {
-                    foreach(var tracker in tier.Trackers)
-                    {
-                        trackersTmp.Add(new()
-                        {
-                            Active = tier.ActiveTracker == tracker,
-                            Tier = level,
-                            Status = tracker.Status.ToString(),
-                            Uri = tracker.Uri
-                        });
-                    }
-                }
-                return trackersTmp;
-            }
-        }
-
         private IDisposable BusyBlock()
         {
             _busyNestCounter++;
@@ -123,7 +102,7 @@ namespace QueueTorrent
         {
             using (_aggregator.DeferredPropertyChangedBlock())
             {
-                Trace.WriteLine($"BT TorrentStateChanged: {Name} {e.OldState} {e.NewState}");
+                // Trace.WriteLine($"BT TorrentStateChanged: {Name} {e.OldState} {e.NewState}");
                 Complete = _manager.Complete;
                 RawState = _manager.State;      // todo: should I use e.NewState here?
                 State = GetState();
@@ -409,5 +388,52 @@ namespace QueueTorrent
 		{
 			await _parent.QueueUp(new[] { this.Key });
 		}
-	}
+
+        public async Task<IEnumerable<ITorrentPeer>> GetPeers()
+        {
+            var peers = await _manager.GetPeersAsync();
+            return peers.Select(p => new TorrentPeer
+            {
+                Uri = p.Uri,
+                AmChoking= p.AmChoking,
+                AmInterested= p.AmInterested,
+                IsInterested= p.IsInterested,
+                IsChoking= p.IsChoking,
+                IsConnected= p.IsConnected,
+                AmRequestingPieceCount= p.AmRequestingPiecesCount,
+                IsRequestingPieceCount = p.IsRequestingPiecesCount,
+                IsSeeder= p.IsSeeder,
+                ConnectionDirection = (TorrentPeer.Direction)p.ConnectionDirection,
+                PiecesReceived= p.PiecesReceived,
+                PiecesSent= p.PiecesSent,   
+                Client = p.ClientApp.Client.ToString()
+            });
+        }
+
+        public async Task<IEnumerable<ITorrentTracker>> GetTrackers()
+        {
+            var trackersTmp = new List<TorrentTracker>();
+            foreach(var (tier, level) in _manager.TrackerManager.Tiers.Select((t, i) => (t, i)))
+            {
+                foreach(var tracker in tier.Trackers)
+                {
+                    trackersTmp.Add(new()
+                    {
+                        Tier = level,
+                        Uri = tracker.Uri,
+                        Active = tier.ActiveTracker == tracker,
+                        CanScrape = tracker.CanScrape,
+                        MinUpdateInterval = tracker.MinUpdateInterval,
+                        UpdateInterval = tracker.UpdateInterval,
+                        TimeSinceLastAnnounce = tracker.TimeSinceLastAnnounce,
+                        Status = tracker.Status.ToString(),
+                        FailureMessage = tracker.FailureMessage,
+                        WarningMessage = tracker.WarningMessage,
+                    });
+                }
+            }
+            await Task.CompletedTask;
+            return trackersTmp;
+        }
+    }
 }

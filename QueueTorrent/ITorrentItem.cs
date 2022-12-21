@@ -1,5 +1,6 @@
 ﻿using MonoTorrent;
 using System.ComponentModel;
+using static QueueTorrent.TorrentItem;
 
 namespace QueueTorrent
 {
@@ -77,7 +78,6 @@ namespace QueueTorrent
         long TotalBytesSent { get; }
 
         IEnumerable<ITorrentFileItem> Files { get; }
-        IEnumerable<ITorrentTrackerItem> Trackers { get; }
 
         Task Pause();
         Task Resume();
@@ -88,5 +88,8 @@ namespace QueueTorrent
 		Task QueueToBottom();
 		Task QueueToTop();
 		Task QueueUp();
-	}
+
+        Task<IEnumerable<ITorrentPeer>> GetPeers();
+        Task<IEnumerable<ITorrentTracker>> GetTrackers();
+    }
 }

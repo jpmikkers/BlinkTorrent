@@ -59,58 +59,89 @@
                 <MudSimpleTable>
                     <thead>
                         <tr>
+                            <th>Uri</th>
                             <th>Tier</th>
                             <th>Active</th>
-                            <th>Uri</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(var tracker in Torrent.Trackers)
-                        {
-                            <tr>
-                                <td>@tracker.Tier</td>
-                                <td>@(tracker.Active ? 'y' : 'n')</td>
-                                <td>@tracker.Uri</td>
-                                <td>@tracker.Status</td>
-                            </tr>
-                        }
+                        <BlinkTimer Interval="TimeSpan.FromSeconds(2.0)" OnTickNonRenderingAsync="async () => { _trackers = await Torrent.GetTrackers(); }">
+                            @foreach(var tracker in _trackers)
+                            {
+                                <tr @key=tracker.Uri>
+                                    <td>@tracker.Uri</td>
+                                    <td>@tracker.Tier</td>
+                                    <td>@(tracker.Active ? 'y' : 'n')</td>
+                                    <td>@tracker.Status</td>
+                                </tr>
+                            }
+                        </BlinkTimer>
+                    </tbody>
+                </MudSimpleTable>
+            </MudTabPanel>
+            <MudTabPanel Text="Peers" Icon="@Icons.Material.Outlined.Cloud">
+                <MudSimpleTable>
+                    <thead>
+                        <tr>
+                            <th>Uri</th>
+                            <th>Direction</th>
+                            <th>Client</th>
+                            <th>Pc Recv</th>
+                            <th>Pc Sent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <BlinkTimer Interval="TimeSpan.FromSeconds(2.0)" OnTickNonRenderingAsync="async () => { _peers = await Torrent.GetPeers(); }">
+                            @foreach(var peer in _peers)
+                            {
+                                <tr @key=peer.Uri>
+                                    <td>@peer.Uri</td>
+                                    <td>@peer.ConnectionDirection</td>
+                                    <td>@peer.Client</td>
+                                    <td>@peer.PiecesReceived</td>
+                                    <td>@peer.PiecesSent</td>
+                                </tr>
+                            }
+                        </BlinkTimer>
                     </tbody>
                 </MudSimpleTable>
             </MudTabPanel>
             <MudTabPanel Text="Details" Icon="@Icons.Material.Outlined.Analytics">
-                <MudGrid Spacing="1">
-                    <MudItem xs="3">
-                        <MudTextField Value="@Torrent.State" Label="State" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="@Torrent.Progress" Label="Progress" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="@Torrent.SeedRatio" Label="Seed ratio" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="@Torrent.QueuePosition" Label="Queue Position" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="Torrent.NumberOfSeeders" Label="Seeders" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="Torrent.NumberOfLeechers" Label="Leechers" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="Torrent.DownloadRate" Label="Dl speed" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="3">
-                        <MudTextField Value="Torrent.UploadRate" Label="Ul speed" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V1InfoHash) ? "<none>" : Torrent.V1InfoHash) Label="V1 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V2InfoHash) ? "<none>" : Torrent.V2InfoHash) Label="V2 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
-                    </MudItem>
-                </MudGrid>
+                <UpdateOnPropertyChange Item=@Torrent>
+                    <MudGrid Spacing="1">
+                        <MudItem xs="3">
+                            <MudTextField Value="@Torrent.State" Label="State" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="@Torrent.Progress" Label="Progress" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="@Torrent.SeedRatio" Label="Seed ratio" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="@Torrent.QueuePosition" Label="Queue Position" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="Torrent.NumberOfSeeders" Label="Seeders" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="Torrent.NumberOfLeechers" Label="Leechers" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="Torrent.DownloadRate" Label="Dl speed" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Value="Torrent.UploadRate" Label="Ul speed" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V1InfoHash) ? "<none>" : Torrent.V1InfoHash) Label="V1 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudTextField Value=@(String.IsNullOrEmpty(Torrent.V2InfoHash) ? "<none>" : Torrent.V2InfoHash) Label="V2 InfoHash" ReadOnly="true" Variant="Variant.Filled" />
+                        </MudItem>
+                    </MudGrid>
+                </UpdateOnPropertyChange>
             </MudTabPanel>
         </MudTabs>
     </MudCardContent>
@@ -173,11 +204,16 @@
 
     private TorrentItem Torrent { get; set; } = default!;
 
+    private IEnumerable<ITorrentPeer> _peers = new List<ITorrentPeer>();
+    private IEnumerable<ITorrentTracker> _trackers = new List<ITorrentTracker>();
+
     protected override async Task OnInitializedAsync()
     {
         if(TorrentKey.TryParse(Key, out var torrentKey))
         {
             Torrent = torrentService.Torrents.First(x => x.Key.Equals(torrentKey));
+            _peers = await Torrent.GetPeers();
+            _trackers = await Torrent.GetTrackers();
         }
         await Task.CompletedTask;
     }

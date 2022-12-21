@@ -9,7 +9,7 @@ namespace QueueTorrent
         private TorrentItemState GetState()
         {
             var state = TorrentItemState.Queued;
-            Trace.WriteLine($"BT GetState(): {Name} {_manager.State}");
+            // Trace.WriteLine($"BT GetState(): {Name} {_manager.State}");
 
             switch(_manager.State)
             {

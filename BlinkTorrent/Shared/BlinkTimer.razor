@@ -6,17 +6,11 @@
 @code {
     private readonly Timer _timer = new Timer();
 
-    [Parameter]
-    public double Initialnterval { get; set; } = 1000.0;
-
     /// <summary>
     /// <inheritdoc cref="System.Timers.Timer.Interval"/>
     /// </summary>
-    public double Interval
-    {
-        get { return _timer.Interval; }
-        set { if(_timer.Interval != value) { _timer.Interval = value; } }
-    }
+    [Parameter, EditorRequired]
+    public TimeSpan Interval { get; set; }
 
     //https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components
     [Parameter]
@@ -41,7 +35,7 @@
 
     protected override void OnInitialized()
     {
-        _timer.Interval = Initialnterval;
+        _timer.Interval = Interval.TotalMilliseconds;
         _timer.Elapsed -= OnTimer;
         _timer.Elapsed += OnTimer;
         _timer.Start();
