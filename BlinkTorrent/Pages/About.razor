@@ -1,0 +1,69 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using System.Net;
+@using System.Reflection;
+@inject ITorrentService TorrentService
+@page "/about"
+
+<PageTitle>About BlinkTorrent</PageTitle>
+
+<MudCard>
+	<MudCardHeader>
+		<CardHeaderContent>
+			<MudText Typo="Typo.h2" Align="Align.Center">BlinkTorrent (v @(AppVersion))</MudText>
+		</CardHeaderContent>
+	</MudCardHeader>
+	<MudCardContent>
+		<MudDivider/>
+		<br />
+		<MudText>CLR version: @(Environment.Version)</MudText>
+		<MudText>OS version: @(Environment.OSVersion)</MudText>
+			<br />
+			<MudDivider />
+		<br/>
+		<MudText>BlinkTorrent uses the following open source libraries:</MudText>
+		<MudList>
+			<MudListItem>• <MudLink Href="https://github.com/alanmcgovern/monotorrent">MonoTorrent</MudLink></MudListItem>
+			<MudListItem>• <MudLink Href="https://www.mudblazor.com">MudBlazor</MudLink></MudListItem>
+			<MudListItem>• <MudLink Href="https://github.com/jpmikkers/Baksteen.Extensions.DeepCopy">Baksteen.Extensions.DeepCopy</MudLink></MudListItem>
+		</MudList>
+		<br />
+		<MudDivider />
+		<br />
+		<MudText>
+				MIT License<br/>
+				<br/>
+				Copyright (c) 2022 Jean-Paul Mikkers<br/>
+				<br/>
+				Permission is hereby granted, free of charge, to any person obtaining a copy
+				of this software and associated documentation files (the "Software"), to deal
+				in the Software without restriction, including without limitation the rights
+				to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+				copies of the Software, and to permit persons to whom the Software is
+				furnished to do so, subject to the following conditions:<br/>
+				<br/>
+				The above copyright notice and this permission notice shall be included in all
+				copies or substantial portions of the Software.<br/>
+				<br/>
+				THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+				IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+				FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+				AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+				LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+				OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+				SOFTWARE.
+		</MudText>
+	</MudCardContent>
+</MudCard>
+
+@code {
+	private string AppVersion
+	{
+		get
+		{
+			var assembly = System.Reflection.Assembly.GetEntryAssembly();			
+			var attribute = assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+			return attribute?.InformationalVersion??"unknown";
+		}
+	}
+}
