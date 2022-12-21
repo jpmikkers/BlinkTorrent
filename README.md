@@ -18,11 +18,11 @@ First make sure to install the dotnet 7 sdk as per these instructions: [https://
 
 To build, go to the BlinkTorrent subdirectory that contains BlinkTorrent.csproj. Then run the following commands:
 
-    dotnet clean
-    dotnet restore
-    dotnet run
+    dotnet clean --configuration Release
+    dotnet run --configuration Release
 
-After that, the gui can be reached at [http://localhost:5105](http://localhost:5105)
+After that, the gui can be reached at [http://localhost:5105](http://localhost:5105)<br/>
+To modify this address or port, please edit the `EndPoints` section of `BlinkTorrent.serverconfig.json`
 
 If you run the application, it will create a folder structure at the following location `%localappdata%\blinktorrent`, which typically expands to `C:\Users\SomeUser\AppData\Local\blinktorrent`.
 
@@ -37,13 +37,17 @@ You can double check which .net sdk you have installed via the following command
 
 To build and run, cd to the BlinkTorrent subdirectory that contains BlinkTorrent.csproj. Then run the following commands:
 
-    dotnet clean
-    dotnet restore
-    dotnet run
+    dotnet clean --configuration Release
+    dotnet run --configuration Release
 
-After that, the gui can be reached at [http://localhost:5105](http://localhost:5105)
+After that, the gui can be reached at [http://localhost:5105](http://localhost:5105)<br/>
+To modify this address or port, please edit the `EndPoints` section of `BlinkTorrent.serverconfig.json`
 
 If you run the application, it will create a folder structure at the following location `~/.local/share/blinktorrent` or `/home/<username>/.local/share/blinktorrent`
+
+## Security
+
+As BlinkTorrent currently does not have any login/authentication/authorization built in yet, you should probably make sure the system that runs it is not exposed to the outside world. If you just want see and use the UI from your local system it's best to change the endpoint in `BlinkTorrent.serverconfig.json` from `http://0.0.0.0:5105` to `http://localhost:5105` or `http://127.0.0.1:5105`
 
 ## Screenshots
 
