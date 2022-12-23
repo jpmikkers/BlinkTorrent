@@ -7,22 +7,23 @@
 	<MudCard Class="ma-0 pa-1" Outlined=true Elevation="0">
 		<div class="d-flex flex-grow-1 gap-1">
 			@* state indicator *@
-			<MudPaper Class=@($"py-1 {StateColorClass}") Width="14px" Elevation="0" />
+			<MudPaper Class=@($"py-1 {StateColorClass}") Width="14px" MinWidth="14px" Elevation="0" />
 			@* title, data and buttons *@
-			<MudPaper Class="flex-grow-1 py-0" Width="64px" Elevation="0">
-				<MudStack Row=false Justify="Justify.SpaceBetween" Spacing="1">
+			<MudPaper Class="flex-grow-1 py-0" MinWidth="40px" Elevation="0">
+				<MudStack Row=false Justify="Justify.SpaceBetween" Spacing="1" Style="line-height:normal">
+						<MudText Typo="Typo.body1" Class="my-0 pa-0 bt_ellipsistext" Style="line-height:inherit">@torrent.Name</MudText>
 
-						<MudStack Row=false Justify="Justify.SpaceBetween" Spacing="0">
-							<MudText Typo="Typo.body1" Class="bt_ellipsistext">@torrent.Name</MudText>
-							<MudText Typo="Typo.subtitle2" Color="Color.Info">State: @(torrent.State) ▼@(Utils.ConvertSpeed(torrent.DownloadRate)) ▲@(Utils.ConvertSpeed(torrent.UploadRate)) Seed ratio: @(torrent.SeedRatio)</MudText>
-						</MudStack>
+						<MudText Typo="Typo.subtitle2" Color="Color.Info" Class="my-0 pa-0 bt_ellipsistext" Style="line-height:inherit">
+							@(torrent.State) ▼@(Utils.ConvertSpeed(torrent.DownloadRate)) ▲@(Utils.ConvertSpeed(torrent.UploadRate))<br/>
+							Seed ratio: @(torrent.SeedRatio)
+						</MudText>
 
 						<MudProgressLinear Color="Color.Success" Size="Size.Large" Minimum="0.0" Maximum="1.0" Value=@torrent.Progress>@($"{torrent.Progress * 100.0: 0.0#} %")</MudProgressLinear>
 
 						<MudStack Row=true AlignItems="AlignItems.Center">
 
 							@* resume, pause, recheck *@
-							<MudButtonGroup Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
+							<MudButtonGroup Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">
 								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.PlayArrow" Disabled=@(!CanResume(torrent)) OnClick=@(async () => await torrent.Resume())></MudIconButton>
 								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.Pause" Disabled=@(!CanPause(torrent)) OnClick=@(async () => await torrent.Pause())></MudIconButton>
 								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Sharp.Recycling" OnClick=@(async () => await torrent.Verify())></MudIconButton>
@@ -30,7 +31,7 @@
 							</MudButtonGroup>
 
 							@* queue ordering *@
-							<MudButtonGroup Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled">
+							<MudButtonGroup Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">
 								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveUp" OnClick=@(async () => await torrent.QueueToTop())></MudIconButton>
 								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveDown" OnClick=@(async () => await torrent.QueueToBottom())></MudIconButton>
 								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowUpward" OnClick=@(async () => await torrent.QueueUp())></MudIconButton>
@@ -40,7 +41,7 @@
 							<MudSpacer></MudSpacer>
 
 							@* delete buttons *@
-							<MudButtonGroup Size="Size.Small" Color="Color.Dark" Variant="Variant.Filled">
+							<MudButtonGroup Size="Size.Medium" Color="Color.Dark" Variant="Variant.Filled">
 								<MudIconButton style="padding:2px" Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick=@(async () => await torrent.Remove(true))></MudIconButton>
 								<MudIconButton style="padding:2px" Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.DeleteForever" OnClick=@(async () => await torrent.Remove(false))></MudIconButton>
 							</MudButtonGroup>
@@ -53,6 +54,11 @@
 }
 
 <style>
+	.debugborder {
+@*		border-width:0.5px;
+		border-color:aqua;
+*@	}
+
 	.btbox {
 		display: flex;
 	}
