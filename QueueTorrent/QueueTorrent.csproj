@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Baksteen.Extensions.DeepCopy" Version="1.0.2" />
-    <PackageReference Include="MonoTorrent" Version="3.0.0-beta.rev0102" />
+    <PackageReference Include="MonoTorrent" Version="3.0.0-beta.rev0106" />
   </ItemGroup>
 
 </Project>
