@@ -32,10 +32,10 @@
 
 							@* queue ordering *@
 							<MudButtonGroup Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled">
-								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveUp" OnClick=@(async () => await torrent.QueueToTop())></MudIconButton>
-								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveDown" OnClick=@(async () => await torrent.QueueToBottom())></MudIconButton>
-								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowUpward" OnClick=@(async () => await torrent.QueueUp())></MudIconButton>
-								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowDownward" OnClick=@(async () => await torrent.QueueDown())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveUp" Disabled=@(!torrent.CanMoveUp) OnClick=@(async () => await torrent.QueueToTop())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.MoveDown" Disabled=@(!torrent.CanMoveDown) OnClick=@(async () => await torrent.QueueToBottom())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowUpward" Disabled=@(!torrent.CanMoveUp) OnClick=@(async () => await torrent.QueueUp())></MudIconButton>
+								<MudIconButton style="padding:2px" Size="Size.Small" Icon="@Icons.Material.Filled.ArrowDownward" Disabled=@(!torrent.CanMoveDown) OnClick=@(async () => await torrent.QueueDown())></MudIconButton>
 							</MudButtonGroup>
 
 							<MudSpacer></MudSpacer>
