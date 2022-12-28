@@ -77,7 +77,10 @@ namespace QueueTorrent
         long TotalBytesReceived { get; }
         long TotalBytesSent { get; }
 
-        IEnumerable<ITorrentFileItem> Files { get; }
+		bool CanMoveUp { get; }
+		bool CanMoveDown { get; }
+
+		IEnumerable<ITorrentFileItem> Files { get; }
 
         Task Pause();
         Task Resume();

@@ -76,7 +76,11 @@ namespace QueueTorrent
 
         public string V2InfoHash { get => _infoHashes.V2?.ToHex() ?? string.Empty; }
 
-        private IDisposable BusyBlock()
+        public bool CanMoveUp => _queuePosition > 0;
+
+        public bool CanMoveDown => _queuePosition < (_parent._torrents.Count-1);
+
+		private IDisposable BusyBlock()
         {
             _busyNestCounter++;
             IsBusy = true;

@@ -21,7 +21,7 @@ namespace QueueTorrent
         private SerialQueue _serialQueue = new();
         private FileSystemWatcher _watcher = new();
         private ClientEngine _engine;
-        private List<TorrentItem> _torrents = new();
+        internal List<TorrentItem> _torrents = new();
 
         private readonly string _baseFolderFullPath;
         private string _settingsFullPath = String.Empty;
@@ -343,5 +343,5 @@ namespace QueueTorrent
             _settings = settings;
             SaveSettings();
         }
-    }
+	}
 }
