@@ -2,6 +2,7 @@ using QueueTorrent;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
+using BlinkTorrent;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Configuration.AddJsonFile("BlinkTorrent.serverconfig.json", optional: fa
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
+builder.Services.AddScoped<BrowserStorageHelperFactory>();
 
 var blinktorrentfolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"blinktorrent");
 if(!Directory.Exists(blinktorrentfolder))

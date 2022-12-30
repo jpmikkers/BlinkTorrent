@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject IDialogService DialogService
+@inject BrowserStorageHelperFactory BrowserStorageHelperFactory
+
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider/>
@@ -26,11 +28,11 @@
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/jpmikkers/BlinkTorrent" Target="_blank" />
         @if(_isDarkMode)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" OnClick="@((e) => DoLightMode())" />
+            <MudIconButton Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" OnClick="@(async (e) => await DoLightMode())" />
         }
         else
         {
-            <MudIconButton Icon="@Icons.Material.Filled.DarkMode" Color="Color.Inherit" OnClick="@((e) => DoDarkMode())" />
+            <MudIconButton Icon="@Icons.Material.Filled.DarkMode" Color="Color.Inherit" OnClick="@(async (e) => await DoDarkMode())" />
         }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
@@ -48,6 +50,7 @@
 </MudLayout>
 
 @code {
+    private BrowserStorageHelper<bool> _browserStorageHelper = default!;
     private bool _isDarkMode = true;
     private MudThemeProvider? _mudThemeProvider;
     private MudTheme? _theme = new();
@@ -57,19 +60,7 @@
     {
         _theme.LayoutProperties.DrawerWidthLeft = "220px";
         _theme.Palette.Background = new MudBlazor.Utilities.MudColor(230,230,230, 255);
-        //_theme.Palette.AppbarBackground = new MudBlazor.Utilities.MudColor(200, 200, 250, 255);
         _theme.Palette.DrawerBackground = new MudBlazor.Utilities.MudColor(200, 200, 250, 255);
-        //_theme.PaletteDark.TextDisabled = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.TextPrimary = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.TextSecondary = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.DarkContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.InfoContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.PrimaryContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.SecondaryContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.WarningContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.TertiaryContrastText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.DrawerText = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
-        //_theme.PaletteDark.Text = new MudBlazor.Utilities.MudColor(200, 200, 200, 255);
         _theme.LayoutProperties.DefaultBorderRadius = "4px";
     }
 
@@ -78,26 +69,30 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    void DoDarkMode()
+    async Task DoDarkMode()
     {
         _isDarkMode = true;
+        await _browserStorageHelper.SetAsync(_isDarkMode);
     }
 
-    void DoLightMode()
+    async Task DoLightMode()
     {
         _isDarkMode = false;
+        await _browserStorageHelper.SetAsync(_isDarkMode);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender)
         {
-            if(_mudThemeProvider != null)
-            {
-                _isDarkMode = await _mudThemeProvider.GetSystemPreference();
-                StateHasChanged();
-            }
+            _isDarkMode = await _browserStorageHelper.GetOrSetDefaultAsync(GetDarkModeSystemPreference);
+            StateHasChanged();
         }
+    }
+
+    private async Task<bool> GetDarkModeSystemPreference()
+    {
+        return await _mudThemeProvider!.GetSystemPreference();
     }
 
     private void OpenDialog()
@@ -114,6 +109,7 @@
 
     protected override void OnInitialized()
     {
+        _browserStorageHelper = BrowserStorageHelperFactory.Create<bool>("blinktorrent.darkmode");
         StateHasChanged();
     }
 }
