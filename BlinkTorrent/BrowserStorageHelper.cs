@@ -19,11 +19,7 @@ public class BrowserStorageHelper<T> where T : notnull
 
     public async ValueTask<T> GetOrSetDefaultAsync(Func<T> getDefaultValue)
     {
-		var result = await _protectedLocalStorage.GetAsync<T>(_key);
-		if(result.Success && result.Value != null) return result.Value;
-		var defaultValue = getDefaultValue();
-		await SetAsync(defaultValue);
-        return defaultValue;
+		return await GetOrSetDefaultAsync(() => Task.FromResult(getDefaultValue()));
     }
 
     public async ValueTask<T> GetOrSetDefaultAsync(Func<Task<T>> getDefaultValue)
