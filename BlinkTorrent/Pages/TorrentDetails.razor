@@ -40,7 +40,7 @@
                                 <tr @key=file.Key>
                                     <td>@file.Path</td>
                                     <td>@(Utils.ConvertSize(file.Length))</td>
-                                    <td><MudProgressCircular Min="0.0" Max="1.0" Value="@file.Progress" Size="Size.Small" Color="Color.Success">123</MudProgressCircular></td>
+                                    <td><MudProgressCircular Min="0.0" Max="1.0" Value="@file.Progress" Size="Size.Small" Color="Color.Success"/></td>
                                     <td>
                                         <select @bind="file.Priority">
                                             @foreach(var value in Enum.GetValues<Priority>())
