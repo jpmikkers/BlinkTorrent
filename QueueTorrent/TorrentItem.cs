@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using MonoTorrent.Trackers;
+using Baksteen.Async;
 
 namespace QueueTorrent
 {
@@ -43,7 +44,7 @@ namespace QueueTorrent
 
         private StopIntent _stopIntent = StopIntent.Queue;
 
-        internal SerialQueue ExecutionQueue { get; private set; } = new();
+        internal TaskQueue ExecutionQueue { get; private set; } = new();
 
         private bool _processing = false;
         private int _busyNestCounter = 0;

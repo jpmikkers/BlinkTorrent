@@ -1,4 +1,5 @@
-﻿using Baksteen.Extensions.DeepCopy;
+﻿using Baksteen.Async;
+using Baksteen.Extensions.DeepCopy;
 using MonoTorrent;
 using MonoTorrent.Client;
 using System.Collections.Specialized;
@@ -18,7 +19,7 @@ namespace QueueTorrent
 
         private readonly System.Timers.Timer _timer = new System.Timers.Timer();
         private TorrentSettings _settings = new TorrentSettings();
-        private SerialQueue _serialQueue = new();
+        private TaskQueue _serialQueue = new();
         private FileSystemWatcher _watcher = new();
         private ClientEngine _engine;
         internal List<TorrentItem> _torrents = new();
