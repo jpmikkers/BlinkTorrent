@@ -122,8 +122,8 @@ namespace QueueTorrent
                 AutoSaveLoadMagnetLinkMetadata = true,
 
                 DhtEndPoint = settings.DhtEndPoint,            // null => disabled Dht                
-                ListenEndPoint = settings.ListenEndPoint,
-
+                ListenEndPoints = ToListenEndPoints(settings.ListenEndPoint),
+              
                 CacheDirectory = _monoTorrentCacheDirectoryFullPath,
 
                 MaximumDownloadRate = settings.MaximumDownloadRate,
@@ -133,6 +133,27 @@ namespace QueueTorrent
             };
 
             return settingBuilder.ToSettings();
+        }
+
+        private static Dictionary<string, IPEndPoint> ToListenEndPoints(IPEndPoint? endPoint)
+        {
+            var result = new Dictionary<string, IPEndPoint>();
+
+            if(endPoint!=null)
+            {
+				switch(endPoint.AddressFamily)
+				{
+					case System.Net.Sockets.AddressFamily.InterNetwork:
+						result.Add("ipv4", endPoint);
+						break;
+
+					case System.Net.Sockets.AddressFamily.InterNetworkV6:
+						result.Add("ipv6", endPoint);
+						break;
+				}
+			}
+
+            return result;
         }
 
         private async Task StartInternal()
