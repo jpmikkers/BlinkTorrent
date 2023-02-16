@@ -4,7 +4,7 @@ using static QueueTorrent.TorrentItem;
 
 namespace QueueTorrent
 {
-    public enum TorrentItemState
+	public enum TorrentItemState
     {
         Starting,           // MT Starting
 
@@ -24,30 +24,6 @@ namespace QueueTorrent
         Error,
     }
 
-    public struct TorrentKey
-    {
-        public /* required */ long Key { get; init; }
-
-        public override string ToString()
-        {
-            return Key.ToString();
-        }
-
-        public static bool TryParse(string? s, out TorrentKey value)
-        {
-            if(int.TryParse(s,out int result))
-            {
-                value = new TorrentKey() { Key = result };
-                return true;
-            }
-            else
-            {
-                value = default;
-            }
-            return false;
-        }
-    }
-
     public interface ITorrentItem : INotifyPropertyChanged
     {
         TorrentKey Key { get; }
@@ -55,15 +31,15 @@ namespace QueueTorrent
         string V1InfoHash { get; }
         string V2InfoHash { get; }
 
-        //InfoHashes InfoHashes { get; }
         string Name { get; }
 
         TorrentItemState State { get; }
         string Error { get; }
         bool IsBusy { get; }
         bool Complete { get; }
+		bool IsForced { get; }
 
-        int QueuePosition { get; set; }
+		int QueuePosition { get; }
 
         double Progress { get; }
         double SeedRatio { get; }
@@ -91,8 +67,9 @@ namespace QueueTorrent
 		Task QueueToBottom();
 		Task QueueToTop();
 		Task QueueUp();
+		Task SetForced(bool forced);
 
-        Task<IEnumerable<ITorrentPeer>> GetPeers();
+		Task<IEnumerable<ITorrentPeer>> GetPeers();
         Task<IEnumerable<ITorrentTracker>> GetTrackers();
     }
 }
