@@ -49,7 +49,7 @@ namespace QueueTorrent
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
         }

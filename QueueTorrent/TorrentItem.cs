@@ -297,7 +297,7 @@ namespace QueueTorrent
                                 File.Delete(file.FullPath);
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                         }
                     }
@@ -307,7 +307,8 @@ namespace QueueTorrent
                         Directory.Delete(_manager.ContainingDirectory, true);
                     }
                 }
-                await _manager.Engine.RemoveAsync(_manager);
+
+                await _manager.Engine?.RemoveAsync(_manager);
             }
             catch
             {

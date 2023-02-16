@@ -37,7 +37,6 @@ namespace QueueTorrent
         string Error { get; }
         bool IsBusy { get; }
         bool Complete { get; }
-		bool IsForced { get; }
 
 		int QueuePosition { get; }
 
@@ -67,7 +66,6 @@ namespace QueueTorrent
 		Task QueueToBottom();
 		Task QueueToTop();
 		Task QueueUp();
-		Task SetForced(bool forced);
 
 		Task<IEnumerable<ITorrentPeer>> GetPeers();
         Task<IEnumerable<ITorrentTracker>> GetTrackers();
