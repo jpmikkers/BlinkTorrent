@@ -308,9 +308,12 @@ namespace QueueTorrent
                     }
                 }
 
-                await _manager.Engine?.RemoveAsync(_manager);
-            }
-            catch
+				if(_manager.Engine is not null)
+                {
+                    await _manager.Engine.RemoveAsync(_manager);
+                }
+			}
+			catch
             {
             }
 

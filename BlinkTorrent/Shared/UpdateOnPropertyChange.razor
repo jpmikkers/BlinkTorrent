@@ -2,78 +2,81 @@
 @implements IDisposable
 
 @ChildContent
- 
+
 @code {
-    private INotifyPropertyChanged? _item;
-    private string? _whitelist;
-    private readonly HashSet<string> _splitWhitelist = new();
+	private INotifyPropertyChanged? _item;
+	private string? _whitelist;
+	private readonly HashSet<string> _splitWhitelist = new();
 
-    [Parameter]
-    public INotifyPropertyChanged? Item {
-        get => _item;
-        set
-        {
-            if (_item != value)
-            {
-                if (_item is not null)
-                {
-                    _item.PropertyChanged -= MyItem_PropertyChanged;
-                }
+	[Parameter]
+	public INotifyPropertyChanged? Item { get; set; }
 
-                _item = value;
+	[Parameter]
+	public string? Whitelist { get; set; }
 
-                if (_item is not null)
-                {
-                    _item.PropertyChanged -= MyItem_PropertyChanged;
-                    _item.PropertyChanged += MyItem_PropertyChanged;
-                }
-            }
-        }
-    }
+	//https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
 
-    [Parameter]
-    public string? Whitelist
-    {
-        get => _whitelist;
-        set {
-            if(value != _whitelist)
-            {
-                _whitelist = value;
+	private void RegisterEventHandler()
+	{
+		if(Whitelist != _whitelist)
+		{
+			_whitelist = Whitelist;
 
-                if(string.IsNullOrWhiteSpace(_whitelist))
-                {
-                    _splitWhitelist.Clear();
-                }
-                else
-                {
-                    _splitWhitelist.Clear();
-                    _splitWhitelist.UnionWith(_whitelist.Split(';'));
-                }
-            }
-        }
-    }
+			if(string.IsNullOrWhiteSpace(_whitelist))
+			{
+				_splitWhitelist.Clear();
+			}
+			else
+			{
+				_splitWhitelist.Clear();
+				_splitWhitelist.UnionWith(_whitelist.Split(';'));
+			}
+		}
 
-    //https://docs.microsoft.com/en-us/dotnet/architecture/blazor-for-web-forms-developers/components
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-    //private Task? _prevTask;
+		if(!object.ReferenceEquals(_item, Item))
+		{
+			if(_item is not null)
+			{
+				_item.PropertyChanged -= ItemPropertyChanged;
+			}
 
-    private async void MyItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        // https://shauncurtis.github.io/posts/Blazor-Async-UI-Events.html
-        if (_splitWhitelist.Count == 0 || _splitWhitelist.Contains(e.PropertyName!))
-        {
-            //if(_prevTask!=null) await _prevTask;
-            //_prevTask = InvokeAsync(StateHasChanged);
-            await InvokeAsync(StateHasChanged);
-        }
-    }
+			_item = Item;
 
-    public void Dispose()
-    {
-        if(_item is not null)
-        {
-            _item.PropertyChanged -= MyItem_PropertyChanged;
-        }
-    }
+			if(_item is not null)
+			{
+				_item.PropertyChanged += ItemPropertyChanged;
+			}
+		}
+	}
+
+	protected override void OnParametersSet()
+	{
+		RegisterEventHandler();
+		base.OnParametersSet();
+	}
+
+	private async void ItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		try
+		{
+			// https://shauncurtis.github.io/posts/Blazor-Async-UI-Events.html
+			if(_splitWhitelist.Count == 0 || _splitWhitelist.Contains(e.PropertyName!))
+			{
+				await InvokeAsync(StateHasChanged);
+			}
+		}
+		catch
+		{
+		}
+	}
+
+	public void Dispose()
+	{
+		if(_item is not null)
+		{
+			_item.PropertyChanged -= ItemPropertyChanged;
+		}
+	}
 }

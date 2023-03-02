@@ -18,7 +18,7 @@
 							Seed ratio: @(torrent.SeedRatio)
 						</MudText>
 
-						<MudProgressLinear Color="Color.Success" Size="Size.Large" Minimum="0.0" Maximum="1.0" Value=@torrent.Progress>@($"{torrent.Progress * 100.0: 0.0#} %")</MudProgressLinear>
+						<MudProgressLinear Color="Color.Success" Size="Size.Large" Min="0.0" Max="1.0" Value=@torrent.Progress>@($"{torrent.Progress * 100.0: 0.0#} %")</MudProgressLinear>
 
 						<MudStack Row=true AlignItems="AlignItems.Center">
 
