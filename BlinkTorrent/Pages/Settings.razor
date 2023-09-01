@@ -87,7 +87,7 @@
 
 	private Converter<System.Net.IPEndPoint> ipendpointconverter = new Converter<System.Net.IPEndPoint>()
 		{
-			GetFunc = x => { return IPEndPoint.TryParse(x, out var result) ? result : null!; },
+			GetFunc = x => { return IPEndPoint.TryParse(x!, out var result) ? result : null!; },
 			SetFunc = x => { return x == null ? "disabled" : x.ToString(); },
 		};
 
