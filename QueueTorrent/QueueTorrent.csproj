@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Baksteen.Async.TaskQueue" Version="1.0.0" />
-    <PackageReference Include="Baksteen.Extensions.DeepCopy" Version="1.0.2" />
+    <PackageReference Include="Baksteen.Extensions.DeepCopy" Version="1.0.3" />
     <PackageReference Include="MonoTorrent" Version="3.0.0-beta.rev0159" />
   </ItemGroup>
 
