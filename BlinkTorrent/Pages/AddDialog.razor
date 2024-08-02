@@ -5,21 +5,20 @@
     <DialogContent>
         <MudStack>
             <MudFileUpload T="IReadOnlyList<IBrowserFile>" Accept=".torrent" FilesChanged="UploadFiles" MaximumFileCount="10">
-                <ButtonTemplate>
+                 <ActivatorContent>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context">
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
                         Select torrent files
                     </MudButton>
-                </ButtonTemplate>
+                </ActivatorContent>
             </MudFileUpload>
             <MudPaper Elevation="2">
                 @if(files != null && files.Count > 0)
                 {
                     <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
-                    <MudList>
+                    <MudList T="string">
                         @foreach(var file in files)
                         {
                             <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">

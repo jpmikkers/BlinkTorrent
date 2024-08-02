@@ -25,7 +25,7 @@
         <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" OnClick="OpenDialog" />
         <MudIconButton Icon="@Icons.Material.Filled.Link" Color="Color.Inherit" OnClick="LinkDialog" />
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/jpmikkers/BlinkTorrent" Target="_blank" />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/jpmikkers/BlinkTorrent" Target="_blank" />
         @if(_isDarkMode)
         {
             <MudIconButton Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" OnClick="@(async (e) => await DoLightMode())" />
@@ -59,8 +59,8 @@
     public MainLayout()
     {
         _theme.LayoutProperties.DrawerWidthLeft = "220px";
-        _theme.Palette.Background = new MudBlazor.Utilities.MudColor(230,230,230, 255);
-        _theme.Palette.DrawerBackground = new MudBlazor.Utilities.MudColor(200, 200, 250, 255);
+        //_theme.Palette.Background = new MudBlazor.Utilities.MudColor(230,230,230, 255);
+        //_theme.Palette.DrawerBackground = new MudBlazor.Utilities.MudColor(200, 200, 250, 255);
         _theme.LayoutProperties.DefaultBorderRadius = "4px";
     }
 
@@ -97,13 +97,13 @@
 
     private void OpenDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true, DisableBackdropClick=true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, BackdropClick=false };
         DialogService.Show<Pages.AddDialog>("Add torrents", options);
     }
 
     private void LinkDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true, DisableBackdropClick = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, BackdropClick = false };
         DialogService.Show<Pages.LinkDialog>("Enter torrent or magnet link", options);
     }
 
