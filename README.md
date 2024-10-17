@@ -14,7 +14,7 @@ A torrent client, built as a Blazor web based gui for monotorrent.
 
 ## Build & run Instructions (Windows)
 
-First make sure to install the dotnet 7 sdk as per these instructions: [https://learn.microsoft.com/en-us/dotnet/core/install/windows?tabs=net70](https://learn.microsoft.com/en-us/dotnet/core/install/windows?tabs=net70)
+First make sure to install the dotnet 8 sdk as per these instructions: [https://learn.microsoft.com/en-us/dotnet/core/install/windows?tabs=net80](https://learn.microsoft.com/en-us/dotnet/core/install/windows?tabs=net80)
 
 To build, go to the BlinkTorrent subdirectory that contains BlinkTorrent.csproj. Then run the following commands:
 
@@ -28,12 +28,11 @@ If you run the application, it will create a folder structure at the following l
 
 ## Build & run Instructions (Linux)
 
-First make sure to install the dotnet 7 sdk as per these instructions: [https://learn.microsoft.com/en-us/dotnet/core/install/linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
+First make sure to install the dotnet 8 sdk as per these instructions: [https://learn.microsoft.com/en-us/dotnet/core/install/linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
 
 You can double check which .net sdk you have installed via the following command:
 
     user@BlinkUbuntu:~/.local/share$ dotnet --list-sdks
-    7.0.101 [/usr/share/dotnet/sdk]
 
 To build and run, cd to the BlinkTorrent subdirectory that contains BlinkTorrent.csproj. Then run the following commands:
 
