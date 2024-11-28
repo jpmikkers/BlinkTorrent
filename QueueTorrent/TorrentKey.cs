@@ -1,26 +1,25 @@
-﻿namespace QueueTorrent
-{
+﻿namespace QueueTorrent;
+
 	public readonly struct TorrentKey
+{
+    public /* required */ long Key { get; init; }
+
+    public override string ToString()
     {
-        public /* required */ long Key { get; init; }
+        return Key.ToString();
+    }
 
-        public override string ToString()
+    public static bool TryParse(string? s, out TorrentKey value)
+    {
+        if(int.TryParse(s,out int result))
         {
-            return Key.ToString();
+            value = new TorrentKey() { Key = result };
+            return true;
         }
-
-        public static bool TryParse(string? s, out TorrentKey value)
+        else
         {
-            if(int.TryParse(s,out int result))
-            {
-                value = new TorrentKey() { Key = result };
-                return true;
-            }
-            else
-            {
-                value = default;
-            }
-            return false;
+            value = default;
         }
+        return false;
     }
 }
