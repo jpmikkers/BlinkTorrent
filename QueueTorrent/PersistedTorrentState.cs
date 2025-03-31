@@ -12,7 +12,7 @@ public record PersistedTorrentStateExt
     public Torrent? Torrent { get; set; }
 
     public static PersistedTorrentStateExt? Deserialize(string path)
-    {
+    {      
         var pts = PersistedTorrentState.Deserialize(path);
 
         if(pts==null) return null;
@@ -54,16 +54,23 @@ public record PersistedTorrentState
 
     public static PersistedTorrentState? Deserialize(string path)
     {
-        using var s = File.OpenRead(path);
-        return JsonSerializer.Deserialize<PersistedTorrentState>(s,
-            new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                Converters =
+        try
+        {
+            using var s = File.OpenRead(path);
+            return JsonSerializer.Deserialize<PersistedTorrentState>(s,
+                new JsonSerializerOptions
                 {
-                    new JsonStringEnumConverter()
-                }
-            });
+                    PropertyNameCaseInsensitive = true,
+                    Converters =
+                    {
+                        new JsonStringEnumConverter()
+                    }
+                });
+        }
+        catch
+        {
+        }
+        return null;
     }
 
     public void Serialize(string path)
